@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:linked_scroll/views/user_list.dart';
+import 'package:linked_scroll/views/consumer_stful_user_list.dart';
 
 void main() {
   runApp(
@@ -21,7 +21,9 @@ class MyApp extends ConsumerWidget {
         appBar: AppBar(
           title: const Text("example"),
         ),
-        body: const UserList(),
+        // body: const UserList(),
+        // body: const ConsumerUserList(),
+        body: const ConsumerStfulUserList(),
       ),
     );
   }
