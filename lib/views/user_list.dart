@@ -13,7 +13,7 @@ class UserList extends StatelessWidget {
       builder: (context, ref, child) {
         // 2. 필요로 하는 Provider를 조회한다.
         final AsyncValue<List<Profile>> profiles = ref.watch(
-          fetchProfilesProvider,
+          userNotifierProvider,
         );
 
         return Center(

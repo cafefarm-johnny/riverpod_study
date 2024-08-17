@@ -9,30 +9,60 @@ part 'user_provider.g.dart';
 
 /// 네트워크 처리는 비즈니스 로직에 해당한다.
 /// Riverpod에서 비즈니스 로직은 provider 내부에 작성한다.
+
+// 1. provider를 class로 승격하여 Notifier로 변경한다.
 @riverpod
-Future<List<Profile>> fetchProfiles(FetchProfilesRef ref) async {
-  final response = await http.get(
-    Uri.parse(
-      'https://gist.githubusercontent.com/'
-      'cafefarm-johnny/'
-      'ad6ca270049e3fbd24be0cae2e20fd6d/'
-      'raw/'
-      'e20114cc476ddb54cdc33bf2223dfc55c74074a3/'
-      'chat_app_peoples_data.json',
-    ),
-  );
+class UserNotifier extends _$UserNotifier {
+  final List<Profile> _db = [];
 
-  if (kDebugMode) {
-    print('status code: ${response.statusCode}');
-    print('response body: ${response.body}');
+  // 2. 이전에 있었던 fetchProfilesProvider 데이터 fetch 로직을 build 메서드로 이동한다.
+  @override
+  Future<List<Profile>> build() async {
+    return await _fetch();
   }
 
-  final json = jsonDecode(response.body) as Map<String, dynamic>;
-  final rawProfiles = json['Johnny'] as List<dynamic>;
+  Future<List<Profile>> _fetch() async {
+    final response = await http.get(
+      Uri.parse(
+        'https://gist.githubusercontent.com/'
+        'cafefarm-johnny/'
+        'ad6ca270049e3fbd24be0cae2e20fd6d/'
+        'raw/'
+        'e20114cc476ddb54cdc33bf2223dfc55c74074a3/'
+        'chat_app_peoples_data.json',
+      ),
+    );
 
-  if (rawProfiles.isEmpty) {
-    return List.empty();
+    if (kDebugMode) {
+      print('status code: ${response.statusCode}');
+      print('response body: ${response.body}');
+    }
+
+    final json = jsonDecode(response.body) as Map<String, dynamic>;
+    final rawProfiles = json['Johnny'] as List<dynamic>;
+
+    if (rawProfiles.isEmpty) {
+      return List.empty();
+    }
+
+    return rawProfiles
+        .map((rawProfile) => Profile.fromJson(rawProfile))
+        .toList()
+      ..addAll(_db);
   }
 
-  return rawProfiles.map((rawProfile) => Profile.fromJson(rawProfile)).toList();
+  // 3. Create, Update, Delete 로직을 추가한다.
+  Future<void> addUser(Profile profile) async {
+    // (저장) like 네트워크 통신 처리
+    Future.delayed(const Duration(seconds: 3));
+    _db.add(profile);
+
+    // POST 요청이 완료되면 로컬 캐시를 Dirty 상태로 변경한다.
+    // 로컬 캐시가 Dirty 상태로 변경되면 notifier의 build 메서드가 비동기적으로 재호출되며,
+    // 리스너들에게 변경사항을 전달한다.
+    ref.invalidateSelf();
+
+    // 상태가 새로 갱신될 때 까지 대기한다.
+    await future;
+  }
 }

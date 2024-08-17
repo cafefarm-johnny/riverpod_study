@@ -12,7 +12,7 @@ class ConsumerUserList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<List<Profile>> profiles = ref.watch(
-      fetchProfilesProvider,
+      userNotifierProvider,
     );
 
     // UI 로직은 user_list.dart 버전과 동일하다. (= UI로직 변경 없이 Consumer만 제거되었다.)

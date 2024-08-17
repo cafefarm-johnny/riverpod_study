@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linked_scroll/views/add_user_floating_button.dart';
 import 'package:linked_scroll/views/consumer_stful_user_list.dart';
 
 void main() {
@@ -24,6 +25,7 @@ class MyApp extends ConsumerWidget {
         // body: const UserList(),
         // body: const ConsumerUserList(),
         body: const ConsumerStfulUserList(),
+        floatingActionButton: const AddUserFloatingButton(),
       ),
     );
   }

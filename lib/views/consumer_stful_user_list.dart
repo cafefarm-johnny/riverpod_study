@@ -17,7 +17,11 @@ class _ConsumerStfulUserListState extends ConsumerState<ConsumerStfulUserList> {
     super.initState();
 
     // 2. 라이프사이클 과정에서 Ref에 접근할 수 있다.
-    ref.listenManual(fetchProfilesProvider, (previous, next) {
+    ref.listenManual(userNotifierProvider, (previous, next) async {
+      if (next.isLoading || next.isReloading || next.isRefreshing) {
+        return;
+      }
+
       // Provider에 리스너를 등록하여 스낵바 등을 구현할 수 있다.
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -32,7 +36,7 @@ class _ConsumerStfulUserListState extends ConsumerState<ConsumerStfulUserList> {
   @override
   Widget build(BuildContext context) {
     final AsyncValue<List<Profile>> profiles = ref.watch(
-      fetchProfilesProvider,
+      userNotifierProvider,
     );
 
     return Center(
