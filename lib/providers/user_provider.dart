@@ -17,11 +17,12 @@ class UserNotifier extends _$UserNotifier {
 
   // 2. 이전에 있었던 fetchProfilesProvider 데이터 fetch 로직을 build 메서드로 이동한다.
   @override
-  Future<List<Profile>> build() async {
-    return await _fetch();
+  Future<List<Profile>> build([int size = 0]) async {
+    // 매개변수를 받고자 하면 그냥 선언하면 된다.
+    return await _fetch(size);
   }
 
-  Future<List<Profile>> _fetch() async {
+  Future<List<Profile>> _fetch(int size) async {
     final response = await http.get(
       Uri.parse(
         'https://gist.githubusercontent.com/'
@@ -46,6 +47,7 @@ class UserNotifier extends _$UserNotifier {
     }
 
     return rawProfiles
+        .sublist(0, size == 0 ? rawProfiles.length : size)
         .map((rawProfile) => Profile.fromJson(rawProfile))
         .toList()
       ..addAll(_db);

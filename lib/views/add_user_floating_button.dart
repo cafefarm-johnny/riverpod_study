@@ -25,7 +25,7 @@ class _AddUserFloatingButtonState extends ConsumerState<AddUserFloatingButton> {
 
     // ref.read를 사용하여 notifier에 접근한다.
     // notifier에 접근하여 addUser 메서드를 호출한다.
-    ref.read(userNotifierProvider.notifier).addUser(newProfile);
+    ref.read(userNotifierProvider(5).notifier).addUser(newProfile);
   }
 
   @override

@@ -17,7 +17,7 @@ class _ConsumerStfulUserListState extends ConsumerState<ConsumerStfulUserList> {
     super.initState();
 
     // 2. 라이프사이클 과정에서 Ref에 접근할 수 있다.
-    ref.listenManual(userNotifierProvider, (previous, next) async {
+    ref.listenManual(userNotifierProvider(5), (previous, next) async {
       if (next.isLoading || next.isReloading || next.isRefreshing) {
         return;
       }
@@ -36,7 +36,7 @@ class _ConsumerStfulUserListState extends ConsumerState<ConsumerStfulUserList> {
   @override
   Widget build(BuildContext context) {
     final AsyncValue<List<Profile>> profiles = ref.watch(
-      userNotifierProvider,
+      userNotifierProvider(0),
     );
 
     return Center(
